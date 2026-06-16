@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  CASHIER
+}
+
+enum PaymentMethod {
+  CASH
+  PIX
+  CARD_DEBIT
+  CARD_CREDIT
+}
+
+enum SaleStatus {
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(CASHIER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  salesCreated Sale[]
+
+  @@index([role])
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  name       String
+  categoryId String
+  price      Decimal  @db.Decimal(10, 2)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  category  Category   @relation(fields: [categoryId], references: [id])
+  saleItems SaleItem[]
+
+  @@unique([name, categoryId])
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+model Sale {
+  id              String        @id @default(cuid())
+  saleNumber      String        @unique
+  totalAmount     Decimal       @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod
+  status          SaleStatus    @default(COMPLETED)
+  createdByUserId String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  cancelledAt     DateTime?
+  cancelReason    String?
+
+  createdBy User       @relation(fields: [createdByUserId], references: [id])
+  items     SaleItem[]
+
+  @@index([createdByUserId])
+  @@index([createdAt])
+  @@index([status])
+  @@index([paymentMethod])
+  @@index([status, createdAt])
+}
+
+model SaleItem {
+  id                  String  @id @default(cuid())
+  saleId              String
+  productId           String
+  productNameSnapshot String
+  unitPriceSnapshot   Decimal @db.Decimal(10, 2)
+  quantity            Int
+  subtotal            Decimal @db.Decimal(10, 2)
+
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([saleId])
+  @@index([productId])
+}

@@ -186,11 +186,15 @@ Current foundation completed:
 - Shared domain constants
 - Initial NestJS API foundation
 - `/api/health` endpoint
+- Prisma/PostgreSQL schema foundation
+- Seed script for admin/cashier users, categories, and sample products
 - Detailed planning documents
 
 Verified locally:
 
 ```bash
+npm --workspace @restocash/api run prisma:validate
+npm --workspace @restocash/api run prisma:generate
 npm run typecheck
 npm test
 npm --workspace @restocash/api run build

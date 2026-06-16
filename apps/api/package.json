@@ -8,22 +8,33 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "echo 'API tests pending: health endpoint scaffolded'",
-    "lint": "echo 'API lint pending'"
+    "lint": "echo 'API lint pending'",
+    "prisma:validate": "sh -c 'DATABASE_URL=${DATABASE_URL:-postgresql://restocash:restocash@localhost:5432/restocash} prisma validate'",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "prisma db seed"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
+    "@prisma/client": "^6.19.3",
+    "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^24.0.0",
+    "prisma": "^6.19.3",
     "ts-node": "^10.9.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.0"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }

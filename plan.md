@@ -163,6 +163,25 @@ curl http://localhost:3000/health
 
 إنشاء قاعدة بيانات واضحة بالعلاقات الأساسية.
 
+### الحالة الحالية
+
+تم إنشاء أساس Prisma/PostgreSQL:
+
+```text
+apps/api/prisma/schema.prisma
+apps/api/prisma/seed.ts
+apps/api/.env.example
+```
+
+وتمت إضافة أوامر:
+
+```bash
+npm --workspace @restocash/api run prisma:validate
+npm --workspace @restocash/api run prisma:generate
+npm --workspace @restocash/api run prisma:migrate
+npm --workspace @restocash/api run prisma:seed
+```
+
 ### Models
 
 ```text
