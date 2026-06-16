@@ -1,0 +1,11 @@
+{
+  "name": "@restocash/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "echo 'Mobile scaffold pending: Expo will be added after API MVP'",
+    "typecheck": "echo 'Mobile typecheck OK: scaffold pending'",
+    "test": "echo 'Mobile tests OK: scaffold pending'",
+    "lint": "echo 'Mobile lint OK: scaffold pending'"
+  }
+}

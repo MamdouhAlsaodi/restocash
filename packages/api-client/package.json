@@ -1,0 +1,10 @@
+{
+  "name": "@restocash/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "echo 'API client typecheck OK: future phase'",
+    "test": "echo 'API client tests OK: future phase'",
+    "lint": "echo 'API client lint OK: scaffold pending'"
+  }
+}

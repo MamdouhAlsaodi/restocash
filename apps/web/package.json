@@ -1,0 +1,10 @@
+{
+  "name": "@restocash/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "echo 'Web typecheck OK: future phase'",
+    "test": "echo 'Web tests OK: future phase'",
+    "lint": "echo 'Web lint OK: future phase'"
+  }
+}

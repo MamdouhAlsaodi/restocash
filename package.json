@@ -1,0 +1,16 @@
+{
+  "name": "restocash",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm --workspace @restocash/api run start:dev",
+    "dev:mobile": "npm --workspace @restocash/mobile run start",
+    "test": "npm --workspaces --if-present run test",
+    "typecheck": "npm --workspaces --if-present run typecheck",
+    "lint": "npm --workspaces --if-present run lint"
+  }
+}
