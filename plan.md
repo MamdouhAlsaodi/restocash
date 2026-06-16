@@ -290,6 +290,35 @@ CASHIER
 
 توفير المنتجات للكاشير وإدارتها من Admin.
 
+### الحالة الحالية
+
+تم إنشاء API للتصنيفات والمنتجات:
+
+```text
+apps/api/src/modules/categories/
+apps/api/src/modules/products/
+```
+
+مع endpoints محمية:
+
+```text
+GET   /api/categories          authenticated
+POST  /api/categories          ADMIN only
+PATCH /api/categories/:id      ADMIN only
+
+GET   /api/products            authenticated
+POST  /api/products            ADMIN only
+PATCH /api/products/:id        ADMIN only
+```
+
+تم اختبار:
+
+```text
+Admin create category/product -> success
+Cashier admin endpoint -> 403
+Unauthenticated products -> 401
+```
+
 ### Endpoints
 
 ```text

@@ -189,6 +189,8 @@ Current foundation completed:
 - Prisma/PostgreSQL schema foundation
 - Seed script for admin/cashier users, categories, and sample products
 - Auth foundation with JWT login, `/api/auth/me`, current-user decorator, and roles guard
+- Categories API with authenticated reads and admin-only create/update
+- Products API with authenticated reads and admin-only create/update
 - Detailed planning documents
 
 Verified locally:
