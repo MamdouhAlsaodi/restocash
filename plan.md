@@ -228,6 +228,34 @@ npx prisma migrate dev --name init
 
 إضافة login وJWT وصلاحيات.
 
+### الحالة الحالية
+
+تم إنشاء أساس Auth:
+
+```text
+apps/api/src/modules/auth/
+apps/api/src/shared/security/
+apps/api/src/database/
+```
+
+والـ endpoints:
+
+```text
+POST /api/auth/login
+GET  /api/auth/me
+```
+
+تمت إضافة:
+
+```text
+JwtAuthGuard
+RolesGuard
+CurrentUser decorator
+Roles decorator
+PasswordService
+PrismaService
+```
+
 ### Endpoints
 
 ```text

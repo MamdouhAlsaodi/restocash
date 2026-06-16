@@ -12,5 +12,9 @@
     "test": "npm --workspaces --if-present run test",
     "typecheck": "npm --workspaces --if-present run typecheck",
     "lint": "npm --workspaces --if-present run lint"
+  },
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1"
   }
 }

@@ -188,6 +188,7 @@ Current foundation completed:
 - `/api/health` endpoint
 - Prisma/PostgreSQL schema foundation
 - Seed script for admin/cashier users, categories, and sample products
+- Auth foundation with JWT login, `/api/auth/me`, current-user decorator, and roles guard
 - Detailed planning documents
 
 Verified locally:
