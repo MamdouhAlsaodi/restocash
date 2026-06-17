@@ -203,8 +203,8 @@ npm --workspace @restocash/api run prisma:generate
 npm run typecheck
 npm test
 npm --workspace @restocash/api run build
-# Checkout/report smoke test verified with a temporary PostgreSQL container:
-# login -> products -> POST /api/sales/checkout -> GET /api/reports/daily
+# Checkout/report integration tests verified with Jest/Supertest and a temporary PostgreSQL container:
+# login -> POST /api/sales/checkout -> persisted Sale/SaleItem snapshots
 ```
 
 Health endpoint:

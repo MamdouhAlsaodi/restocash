@@ -382,13 +382,29 @@ POST /api/sales/checkout    ADMIN أو CASHIER
 
 الـ backend يعيد حساب السعر من قاعدة البيانات، ينشئ `Sale` داخل transaction، ويحفظ `SaleItem` snapshots.
 
-### Tests ضرورية
+### Tests الحالية
 
+تم بدء تغطية حقيقية بـ Jest/Supertest:
+
+```text
+apps/api/test/sales.checkout.int-spec.ts
+```
+
+يغطي حالياً:
+
+- checkout ناجح يعيد حساب السعر من DB.
+- حفظ SaleItem snapshots.
 - empty cart fails.
 - invalid quantity fails.
-- inactive product fails.
-- backend recalculates total from DB.
-- snapshots are saved.
+- inactive/missing product fails.
+- CASHIER يستطيع checkout.
+
+### Tests ضرورية لاحقاً
+
+- daily report aggregates totals by payment method.
+- cancelled sales are excluded from reports.
+- CASHIER cannot access admin-only reports.
+- invalid report date fails with 400.
 
 ---
 
