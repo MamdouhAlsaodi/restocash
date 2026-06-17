@@ -191,6 +191,8 @@ Current foundation completed:
 - Auth foundation with JWT login, `/api/auth/me`, current-user decorator, and roles guard
 - Categories API with authenticated reads and admin-only create/update
 - Products API with authenticated reads and admin-only create/update
+- Checkout API with backend-owned totals and SaleItem snapshots
+- Daily reports API with totals by payment method
 - Detailed planning documents
 
 Verified locally:
@@ -201,6 +203,8 @@ npm --workspace @restocash/api run prisma:generate
 npm run typecheck
 npm test
 npm --workspace @restocash/api run build
+# Checkout/report smoke test verified with a temporary PostgreSQL container:
+# login -> products -> POST /api/sales/checkout -> GET /api/reports/daily
 ```
 
 Health endpoint:

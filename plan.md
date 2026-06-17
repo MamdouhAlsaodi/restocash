@@ -366,6 +366,22 @@ POST /api/sales/checkout
 10. تنفيذ كل شيء داخل Prisma transaction.
 ```
 
+### الحالة الحالية
+
+تم تنفيذ Checkout API:
+
+```text
+apps/api/src/modules/sales/
+```
+
+والـ endpoint:
+
+```text
+POST /api/sales/checkout    ADMIN أو CASHIER
+```
+
+الـ backend يعيد حساب السعر من قاعدة البيانات، ينشئ `Sale` داخل transaction، ويحفظ `SaleItem` snapshots.
+
 ### Tests ضرورية
 
 - empty cart fails.
@@ -387,6 +403,22 @@ POST /api/sales/checkout
 ```text
 GET /api/reports/daily?date=YYYY-MM-DD
 ```
+
+### الحالة الحالية
+
+تم تنفيذ Daily Report API:
+
+```text
+apps/api/src/modules/reports/
+```
+
+والـ endpoint:
+
+```text
+GET /api/reports/daily?date=YYYY-MM-DD    ADMIN only
+```
+
+يرجع عدد المبيعات، الإجمالي، المجاميع حسب طريقة الدفع، وقائمة مختصرة بالمبيعات المكتملة فقط.
 
 ### Response مثال
 

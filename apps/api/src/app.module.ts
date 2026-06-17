@@ -4,6 +4,8 @@ import { DatabaseModule } from "./database/database.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { CategoriesModule } from "./modules/categories/categories.module";
 import { ProductsModule } from "./modules/products/products.module";
+import { ReportsModule } from "./modules/reports/reports.module";
+import { SalesModule } from "./modules/sales/sales.module";
 import { HealthModule } from "./modules/health/health.module";
 import { SecurityModule } from "./shared/security/security.module";
 
@@ -18,6 +20,8 @@ import { SecurityModule } from "./shared/security/security.module";
     AuthModule,
     CategoriesModule,
     ProductsModule,
+    SalesModule,
+    ReportsModule,
     HealthModule,
   ],
 })
