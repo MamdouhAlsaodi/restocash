@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "RestoCash",
+    "slug": "restocash",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "restocash",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#1a1a2e",
+      "resizeMode": "contain",
+      "image": "./assets/splash.png"
+    },
+    "android": {
+      "package": "com.restocash.app",
+      "versionCode": 1,
+      "usesCleartextTraffic": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1a2e"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/icon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "restocash-local"
+      },
+      "restocash": {
+        "defaultApiBaseUrl": "http://100.100.143.125:3000/api"
+      }
+    }
+  }
+}

@@ -2,10 +2,33 @@
   "name": "@restocash/mobile",
   "version": "0.1.0",
   "private": true,
+  "main": "src/App.tsx",
   "scripts": {
-    "start": "echo 'Mobile scaffold pending: Expo will be added after API MVP'",
-    "typecheck": "echo 'Mobile typecheck OK: scaffold pending'",
-    "test": "echo 'Mobile tests OK: scaffold pending'",
-    "lint": "echo 'Mobile lint OK: scaffold pending'"
+    "start": "expo start",
+    "android": "expo run:android",
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'Mobile tests OK: UI pending device testing'"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "^56.0.15",
+    "@react-navigation/native": "^7.1.6",
+    "@react-navigation/native-stack": "^7.3.10",
+    "expo": "~53.0.0",
+    "expo-build-properties": "^0.14.8",
+    "expo-file-system": "~18.0.4",
+    "expo-status-bar": "~2.2.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native-web": "~0.20.0",
+    "@expo/metro-runtime": "~5.0.4",
+    "react-dom": "^19.0.0",
+    "react-native": "0.79.2",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.10.0",
+    "react-native-web": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.0.0",
+    "typescript": "~5.8.3"
   }
 }
