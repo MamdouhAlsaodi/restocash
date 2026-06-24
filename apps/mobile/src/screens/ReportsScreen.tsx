@@ -50,7 +50,7 @@ export function ReportsScreen() {
         />
         <TouchableOpacity style={styles.searchBtn} onPress={loadReport} disabled={loading}>
           {loading ? (
-            <ActivityIndicator color={colors.white} size="small" />
+            <ActivityIndicator color={colors.onPrimary} size="small" />
           ) : (
             <Text style={styles.searchBtnText}>Buscar</Text>
           )}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 8,
     paddingHorizontal: 16,
-    color: colors.white,
+    color: colors.text,
     fontSize: 16,
   },
   searchBtn: {
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: "center",
   },
-  searchBtnText: { color: colors.white, fontWeight: "700" as const },
+  searchBtnText: { color: colors.onPrimary, fontWeight: "700" as const },
   error: { color: colors.danger, paddingHorizontal: 20, fontSize: 14 },
   reportWrap: { flex: 1, paddingHorizontal: 20 },
   totalCard: {
@@ -169,8 +169,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  methodLabel: { color: colors.white, fontSize: 16 },
-  methodAmount: { color: colors.gold, fontSize: 16, fontWeight: "600" as const },
+  methodLabel: { color: colors.text, fontSize: 16 },
+  methodAmount: { color: colors.text, fontSize: 16, fontWeight: "700" as const },
   methodAmountZero: { color: colors.muted },
   salesList: { gap: 8, paddingBottom: 40 },
   saleRow: {
@@ -181,8 +181,8 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   saleLeft: { gap: 2 },
-  saleNumber: { color: colors.white, fontSize: 14, fontWeight: "600" as const },
+  saleNumber: { color: colors.text, fontSize: 14, fontWeight: "600" as const },
   saleMethod: { color: colors.muted, fontSize: 12 },
-  saleAmount: { color: colors.gold, fontSize: 16, fontWeight: "700" as const },
+  saleAmount: { color: colors.primary, fontSize: 16, fontWeight: "700" as const },
   emptyText: { color: colors.muted, textAlign: "center", paddingVertical: 20 },
 });

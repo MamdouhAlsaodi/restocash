@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  checkIcon: { fontSize: 40, color: colors.white, fontWeight: "700" as const },
+  checkIcon: { fontSize: 40, color: colors.onPrimary, fontWeight: "700" as const },
   title: { ...typography.title, fontSize: 28, marginBottom: 4 },
   saleNumber: { color: colors.muted, fontSize: 14, marginBottom: 32 },
   detailsCard: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   detailLabel: { color: colors.muted, fontSize: 16 },
-  detailValue: { color: colors.white, fontSize: 16, fontWeight: "600" as const },
+  detailValue: { color: colors.text, fontSize: 16, fontWeight: "600" as const },
   newSaleBtn: {
     backgroundColor: colors.primary,
     borderRadius: 12,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 48,
   },
   newSaleBtnText: {
-    color: colors.white,
+    color: colors.onPrimary,
     fontSize: 18,
     fontWeight: "700" as const,
   },

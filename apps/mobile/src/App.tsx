@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ActivityIndicator, View, Text, TouchableOpacity, StyleSheet, LogBox } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { NavigationContainer, DarkTheme } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 
@@ -34,6 +34,7 @@ function MainScreen({ navigation }: { navigation: any }) {
   const { user, logout } = useAuth();
   const isAdmin = user?.role === "ADMIN";
   const [activeTab, setActiveTab] = useState<"cashier" | "reports">("cashier");
+  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -45,8 +46,8 @@ function MainScreen({ navigation }: { navigation: any }) {
         )}
       </View>
 
-      {/* Bottom tab bar */}
-      <View style={styles.tabBar}>
+      {/* Bottom tab bar — respects safe area (gesture bar / 3-button bar) */}
+      <View style={[styles.tabBar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         <TouchableOpacity
           style={styles.tab}
           onPress={() => setActiveTab("cashier")}
@@ -97,13 +98,13 @@ function AppNavigator() {
   return (
     <NavigationContainer
       theme={{
-        ...DarkTheme,
+        ...DefaultTheme,
         colors: {
-          ...DarkTheme.colors,
+          ...DefaultTheme.colors,
           background: colors.bg,
           card: colors.card,
           primary: colors.primary,
-          text: colors.white,
+          text: colors.text,
           border: colors.border,
         },
       }}

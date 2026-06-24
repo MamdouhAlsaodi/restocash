@@ -97,7 +97,7 @@ export function PaymentScreen({ navigation }: { navigation: any }) {
           disabled={!selected || busy}
         >
           {busy ? (
-            <ActivityIndicator color={colors.white} />
+            <ActivityIndicator color={colors.onPrimary} />
           ) : (
             <Text style={styles.confirmBtnText}>Confirmar ✓</Text>
           )}
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cardAlt,
   },
   optionIcon: { fontSize: 32, marginBottom: 8 },
-  optionLabel: { color: colors.white, fontSize: 16, fontWeight: "600" as const },
+  optionLabel: { color: colors.text, fontSize: 16, fontWeight: "600" as const },
   optionLabelActive: { color: colors.primary },
   error: {
     color: colors.danger,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.card,
   },
-  cancelBtnText: { color: colors.white, fontSize: 16 },
+  cancelBtnText: { color: colors.text, fontSize: 16 },
   confirmBtn: {
     flex: 2,
     backgroundColor: colors.green,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   confirmBtnDisabled: { opacity: 0.4 },
   confirmBtnText: {
-    color: colors.white,
+    color: colors.onPrimary,
     fontSize: 18,
     fontWeight: "700" as const,
   },

@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   itemInfo: { flex: 1 },
-  itemName: { color: colors.white, fontSize: 16, fontWeight: "600" as const },
+  itemName: { color: colors.text, fontSize: 16, fontWeight: "600" as const },
   itemPrice: { color: colors.muted, fontSize: 13, marginTop: 2 },
   qtyControls: {
     flexDirection: "row",
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  qtyBtnText: { color: colors.white, fontSize: 20, fontWeight: "700" as const },
-  qtyValue: { color: colors.white, fontSize: 18, fontWeight: "700" as const, minWidth: 24, textAlign: "center" },
+  qtyBtnText: { color: colors.text, fontSize: 20, fontWeight: "700" as const },
+  qtyValue: { color: colors.text, fontSize: 18, fontWeight: "700" as const, minWidth: 24, textAlign: "center" },
   itemSubtotal: {
     color: colors.gold,
     fontSize: 16,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   totalLabel: { color: colors.muted, fontSize: 18 },
-  totalValue: { color: colors.white, fontSize: 24, fontWeight: "700" as const },
+  totalValue: { color: colors.primary, fontSize: 24, fontWeight: "700" as const },
   checkoutBtn: {
     backgroundColor: colors.green,
     borderRadius: 12,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkoutBtnText: {
-    color: colors.white,
+    color: colors.onPrimary,
     fontSize: 18,
     fontWeight: "700" as const,
   },

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   categoryChipActive: {
     backgroundColor: colors.primary,
-    color: colors.white,
+    color: colors.onPrimary,
   },
   productList: { flex: 1, paddingHorizontal: 8 },
   productRow: { gap: 8, paddingHorizontal: 4 },
@@ -193,17 +193,17 @@ const styles = StyleSheet.create({
   },
   cartLeft: { flexDirection: "row", alignItems: "center", gap: 16 },
   cartItemCount: {
-    color: colors.white,
+    color: colors.onPrimary,
     fontSize: 14,
     fontWeight: "600" as const,
   },
   cartTotal: {
-    color: colors.white,
+    color: colors.onPrimary,
     fontSize: 20,
     fontWeight: "700" as const,
   },
   cartAction: {
-    color: colors.white,
+    color: colors.onPrimary,
     fontSize: 16,
     fontWeight: "600" as const,
   },
