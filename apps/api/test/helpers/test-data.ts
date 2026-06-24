@@ -1,5 +1,5 @@
 import { INestApplication } from "@nestjs/common";
-import { PaymentMethod, PrismaClient, UserRole } from "@prisma/client";
+import { PaymentMethod, PrismaClient, SaleStatus, UserRole } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 const request = require("supertest");
 
@@ -78,4 +78,30 @@ export function checkoutPayload(productId: string, quantity = 2, paymentMethod: 
     paymentMethod,
     items: [{ productId, quantity }],
   };
+}
+
+export function reportDate(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+export async function createSale(input: {
+  createdByUserId: string;
+  saleNumber: string;
+  totalAmount: string;
+  paymentMethod: PaymentMethod;
+  status?: SaleStatus;
+  createdAt?: Date;
+}) {
+  return prisma.sale.create({
+    data: {
+      createdByUserId: input.createdByUserId,
+      saleNumber: input.saleNumber,
+      totalAmount: input.totalAmount,
+      paymentMethod: input.paymentMethod,
+      status: input.status ?? SaleStatus.COMPLETED,
+      createdAt: input.createdAt,
+      cancelledAt: input.status === SaleStatus.CANCELLED ? new Date() : undefined,
+      cancelReason: input.status === SaleStatus.CANCELLED ? "Test cancellation" : undefined,
+    },
+  });
 }

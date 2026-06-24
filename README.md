@@ -205,6 +205,7 @@ npm test
 npm --workspace @restocash/api run build
 # Checkout/report integration tests verified with Jest/Supertest and a temporary PostgreSQL container:
 # login -> POST /api/sales/checkout -> persisted Sale/SaleItem snapshots
+# GET /api/reports/daily -> totals by payment method, excludes cancelled sales, ADMIN-only
 ```
 
 Health endpoint:

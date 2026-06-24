@@ -388,6 +388,7 @@ POST /api/sales/checkout    ADMIN أو CASHIER
 
 ```text
 apps/api/test/sales.checkout.int-spec.ts
+apps/api/test/reports.daily.int-spec.ts
 ```
 
 يغطي حالياً:
@@ -401,10 +402,8 @@ apps/api/test/sales.checkout.int-spec.ts
 
 ### Tests ضرورية لاحقاً
 
-- daily report aggregates totals by payment method.
-- cancelled sales are excluded from reports.
-- CASHIER cannot access admin-only reports.
-- invalid report date fails with 400.
+- sale cancellation endpoint flow (`POST /api/sales/:id/cancel`) after Phase 10 is implemented.
+- report timezone behavior for restaurant-local days before production use.
 
 ---
 
@@ -435,6 +434,21 @@ GET /api/reports/daily?date=YYYY-MM-DD    ADMIN only
 ```
 
 يرجع عدد المبيعات، الإجمالي، المجاميع حسب طريقة الدفع، وقائمة مختصرة بالمبيعات المكتملة فقط.
+
+### Tests الحالية
+
+تمت إضافة تغطية integration حقيقية للتقرير اليومي:
+
+```text
+apps/api/test/reports.daily.int-spec.ts
+```
+
+تغطي حالياً:
+
+- تجميع totals حسب `PaymentMethod` لليوم المطلوب.
+- استبعاد المبيعات الملغاة من totals وقائمة المبيعات.
+- منع `CASHIER` من الوصول لتقارير admin-only.
+- رفض التاريخ غير الصحيح بـ `400`.
 
 ### Response مثال
 

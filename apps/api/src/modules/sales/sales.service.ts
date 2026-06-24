@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Prisma, SaleStatus } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
 import { CheckoutDto } from "./dto/checkout.dto";
+import { CancelSaleDto } from "./dto/cancel-sale.dto";
 
 @Injectable()
 export class SalesService {
@@ -75,6 +76,51 @@ export class SalesService {
             },
           },
         },
+      });
+    });
+  }
+
+  /**
+   * Cancel a sale.
+   * - Sets status to CANCELLED
+   * - Records the cancellation reason and timestamp
+   * - Returns the cancelled sale with items
+   *
+   * Idempotent: cancelling an already-cancelled sale returns the existing cancellation.
+   */
+  async cancel(saleId: string, dto: CancelSaleDto, cancelledByUserId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const sale = await tx.sale.findUnique({
+        where: { id: saleId },
+        select: { id: true, status: true, cancelledAt: true, cancelReason: true },
+      });
+
+      if (!sale) {
+        throw new NotFoundException(`Sale ${saleId} not found`);
+      }
+
+      if (sale.status === SaleStatus.CANCELLED) {
+        // Idempotent: return current state
+        return tx.sale.findUnique({
+          where: { id: saleId },
+          include: { items: true },
+        });
+      }
+
+      if (sale.status !== SaleStatus.COMPLETED) {
+        throw new BadRequestException(
+          `Cannot cancel sale in status ${sale.status}`,
+        );
+      }
+
+      return tx.sale.update({
+        where: { id: saleId },
+        data: {
+          status: SaleStatus.CANCELLED,
+          cancelledAt: new Date(),
+          cancelReason: dto.reason,
+        },
+        include: { items: true },
       });
     });
   }
