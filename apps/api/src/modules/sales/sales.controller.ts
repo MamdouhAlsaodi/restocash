@@ -15,7 +15,7 @@ export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
   @Post("checkout")
-  @Roles(UserRole.ADMIN, UserRole.CASHIER)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.CASHIER)
   checkout(@Body() dto: CheckoutDto, @CurrentUser() user: AuthenticatedUser) {
     return this.salesService.checkout(dto, user.id);
   }
@@ -36,7 +36,7 @@ export class SalesController {
    * returns the existing record.
    */
   @Post(":id/cancel")
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   cancel(
     @Param("id") id: string,
     @Body() dto: CancelSaleDto,
