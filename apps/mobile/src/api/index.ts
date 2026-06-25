@@ -1,5 +1,16 @@
 import { apiFetch } from "./client";
-import type { Category, LoginResponse, PaymentMethod, Product, Sale, CheckoutItem, DailyReport } from "./types";
+import type {
+  Category,
+  CreateUserPayload,
+  DailyReport,
+  LoginResponse,
+  PaymentMethod,
+  Product,
+  Sale,
+  CheckoutItem,
+  UpdateUserPayload,
+  UserSummary,
+} from "./types";
 
 export const authApi = {
   login: (email: string, password: string) =>
@@ -24,8 +35,19 @@ export const salesApi = {
       method: "POST",
       body: { items, paymentMethod },
     }),
+  byId: (id: string) => apiFetch<Sale>(`/sales/${id}`),
 };
 
 export const reportsApi = {
   daily: (date: string) => apiFetch<DailyReport>(`/reports/daily?date=${date}`),
+};
+
+export const usersApi = {
+  list: () => apiFetch<UserSummary[]>("/users"),
+  create: (payload: CreateUserPayload) =>
+    apiFetch<UserSummary>("/users", { method: "POST", body: payload }),
+  update: (id: string, payload: UpdateUserPayload) =>
+    apiFetch<UserSummary>(`/users/${id}`, { method: "PATCH", body: payload }),
+  remove: (id: string) =>
+    apiFetch<{ ok: boolean }>(`/users/${id}`, { method: "DELETE" }),
 };

@@ -60,6 +60,26 @@ async function main() {
     role: UserRole.CASHIER,
   });
 
+  // Demo users for the Users admin screen
+  await upsertUser({
+    name: "Sara Manager",
+    email: "sara@restocash.local",
+    password: "sara123",
+    role: UserRole.ADMIN,
+  });
+  await upsertUser({
+    name: "João Caixa",
+    email: "joao@restocash.local",
+    password: "joao123",
+    role: UserRole.CASHIER,
+  });
+  await upsertUser({
+    name: "Mariana Caixa",
+    email: "mariana@restocash.local",
+    password: "mariana123",
+    role: UserRole.CASHIER,
+  });
+
   const categoryByName = new Map<string, { id: string }>();
 
   for (const category of categories) {

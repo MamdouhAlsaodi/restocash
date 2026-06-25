@@ -7,8 +7,10 @@ import { catalogApi } from "../api";
 import type { Category, Product } from "../api/types";
 import { useCart } from "../context/CartContext";
 import { colors, typography } from "../theme";
+import { useT, fmtMoney } from "../i18n";
 
 export function CashierScreen({ navigation }: { navigation: any }) {
+  const t = useT();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -72,7 +74,7 @@ export function CashierScreen({ navigation }: { navigation: any }) {
               !selectedCategory && styles.categoryChipActive,
             ]}
           >
-            Todos
+            {t.cashier.all}
           </Text>
         </TouchableOpacity>
         {categories.map((cat) => (
@@ -107,13 +109,13 @@ export function CashierScreen({ navigation }: { navigation: any }) {
               {item.name}
             </Text>
             <Text style={styles.productPrice}>
-              R$ {Number(item.price).toFixed(2).replace(".", ",")}
+              {fmtMoney(item.price)}
             </Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={styles.emptyWrap}>
-            <Text style={styles.emptyText}>Nenhum produto</Text>
+            <Text style={styles.emptyText}>{t.cashier.noProducts}</Text>
           </View>
         }
       />
@@ -126,12 +128,12 @@ export function CashierScreen({ navigation }: { navigation: any }) {
           activeOpacity={0.8}
         >
           <View style={styles.cartLeft}>
-            <Text style={styles.cartItemCount}>{totalItems} item(s)</Text>
+            <Text style={styles.cartItemCount}>{t.cashier.itemCount(totalItems)}</Text>
             <Text style={styles.cartTotal}>
-              R$ {totalPrice.toFixed(2).replace(".", ",")}
+              {fmtMoney(totalPrice)}
             </Text>
           </View>
-          <Text style={styles.cartAction}>Ver carrinho →</Text>
+          <Text style={styles.cartAction}>{t.cashier.viewCart}</Text>
         </TouchableOpacity>
       )}
     </SafeAreaView>

@@ -7,7 +7,13 @@ import { AppModule } from "./app.module";
 function buildCorsOrigins(): string[] {
   const raw = process.env.WEB_ORIGINS ?? process.env.WEB_ORIGIN;
   if (!raw || raw.trim() === "") {
-    return [];
+    // Sensible default: allow common dev origins so the web build at :8081
+    // can call the API without a per-environment .env.
+    return [
+      "http://localhost:8081",
+      "http://127.0.0.1:8081",
+      "http://100.100.143.125:8081",
+    ];
   }
   if (raw.trim() === "*") {
     return ["*"];

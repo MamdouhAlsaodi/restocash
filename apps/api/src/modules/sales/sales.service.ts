@@ -8,6 +8,23 @@ import { CancelSaleDto } from "./dto/cancel-sale.dto";
 export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Fetch a single sale with items + cashier info for the Reports drill-down.
+   */
+  async findById(id: string) {
+    const sale = await this.prisma.sale.findUnique({
+      where: { id },
+      include: {
+        items: true,
+        createdBy: { select: { id: true, name: true, email: true, role: true } },
+      },
+    });
+    if (!sale) {
+      throw new NotFoundException(`Sale ${id} not found`);
+    }
+    return sale;
+  }
+
   async checkout(dto: CheckoutDto, createdByUserId: string) {
     const aggregatedItems = this.aggregateItems(dto.items);
     const productIds = aggregatedItems.map((item) => item.productId);

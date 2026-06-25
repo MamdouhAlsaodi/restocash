@@ -2,16 +2,20 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { Sale } from "../api/types";
+import { useCart } from "../context/CartContext";
 import { colors, typography } from "../theme";
+import { useT, fmtMoney } from "../i18n";
 
 export function ConfirmationScreen({ route, navigation }: { route: any; navigation: any }) {
   const sale: Sale = route.params?.sale;
+  const { clearCart } = useCart();
+  const t = useT();
 
   const paymentLabels: Record<string, string> = {
-    CASH: "Dinheiro",
-    PIX: "Pix",
-    CARD_DEBIT: "Débito",
-    CARD_CREDIT: "Crédito",
+    CASH: t.payment.CASH,
+    PIX: t.payment.PIX,
+    CARD_DEBIT: t.payment.CARD_DEBIT,
+    CARD_CREDIT: t.payment.CARD_CREDIT,
   };
 
   return (
@@ -20,33 +24,37 @@ export function ConfirmationScreen({ route, navigation }: { route: any; navigati
         <View style={styles.checkCircle}>
           <Text style={styles.checkIcon}>✓</Text>
         </View>
-        <Text style={styles.title}>Venda realizada!</Text>
+        <Text style={styles.title}>{t.confirmation.success}</Text>
         <Text style={styles.saleNumber}>{sale?.saleNumber ?? ""}</Text>
 
         <View style={styles.detailsCard}>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Total</Text>
+            <Text style={styles.detailLabel}>{t.common.total}</Text>
             <Text style={styles.detailValue}>
-              R$ {Number(sale?.totalAmount ?? 0).toFixed(2).replace(".", ",")}
+              {fmtMoney(sale?.totalAmount ?? 0)}
             </Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Pagamento</Text>
+            <Text style={styles.detailLabel}>{t.confirmation.paymentLabel}</Text>
             <Text style={styles.detailValue}>
               {paymentLabels[sale?.paymentMethod] ?? sale?.paymentMethod}
             </Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Itens</Text>
+            <Text style={styles.detailLabel}>{t.confirmation.itemsLabel}</Text>
             <Text style={styles.detailValue}>{sale?.items?.length ?? 0}</Text>
           </View>
         </View>
 
         <TouchableOpacity
           style={styles.newSaleBtn}
-          onPress={() => navigation.replace("Cashier")}
+          onPress={() => {
+            clearCart();
+            navigation.popToTop();
+            navigation.navigate("Main");
+          }}
         >
-          <Text style={styles.newSaleBtnText}>Nova venda</Text>
+          <Text style={styles.newSaleBtnText}>{t.confirmation.newSale}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -6,15 +6,26 @@ import { salesApi } from "../api";
 import type { PaymentMethod, Sale } from "../api/types";
 import { useCart } from "../context/CartContext";
 import { colors, typography } from "../theme";
+import { useT, fmtMoney, getDictionary } from "../i18n";
 
-const PAYMENT_OPTIONS: { label: string; value: PaymentMethod; icon: string }[] = [
-  { label: "Dinheiro", value: "CASH", icon: "💵" },
-  { label: "Pix", value: "PIX", icon: "📱" },
-  { label: "Débito", value: "CARD_DEBIT", icon: "💳" },
-  { label: "Crédito", value: "CARD_CREDIT", icon: "💳" },
-];
+/**
+ * Build the payment options list using the *static* default dictionary.
+ * The screen then re-reads the active dictionary via `useT()` for labels
+ * that can change at runtime (titles, errors).
+ */
+function buildPaymentOptions() {
+  const dict = getDictionary();
+  return [
+    { label: dict.payment.CASH, value: "CASH" as PaymentMethod, icon: "💵" },
+    { label: dict.payment.PIX, value: "PIX" as PaymentMethod, icon: "📱" },
+    { label: dict.payment.CARD_DEBIT, value: "CARD_DEBIT" as PaymentMethod, icon: "💳" },
+    { label: dict.payment.CARD_CREDIT, value: "CARD_CREDIT" as PaymentMethod, icon: "💳" },
+  ];
+}
 
 export function PaymentScreen({ navigation }: { navigation: any }) {
+  const t = useT();
+  const PAYMENT_OPTIONS = buildPaymentOptions();
   const { items, totalPrice, clearCart } = useCart();
   const [selected, setSelected] = useState<PaymentMethod | null>(null);
   const [busy, setBusy] = useState(false);
@@ -35,7 +46,7 @@ export function PaymentScreen({ navigation }: { navigation: any }) {
       clearCart();
       navigation.replace("Confirmation", { sale });
     } catch (err: any) {
-      setError(err?.message ?? "Erro ao finalizar venda");
+      setError(err?.message ?? t.paymentScreen.submitError);
     } finally {
       setBusy(false);
     }
@@ -44,19 +55,19 @@ export function PaymentScreen({ navigation }: { navigation: any }) {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Pagamento</Text>
+        <Text style={styles.headerTitle}>{t.paymentScreen.title}</Text>
       </View>
 
       <View style={styles.summary}>
-        <Text style={styles.summaryLabel}>Total a pagar</Text>
+        <Text style={styles.summaryLabel}>{t.paymentScreen.totalLabel}</Text>
         <Text style={styles.summaryValue}>
-          R$ {totalPrice.toFixed(2).replace(".", ",")}
+          {fmtMoney(totalPrice)}
         </Text>
-        <Text style={styles.summaryItems}>{items.length} item(s)</Text>
+        <Text style={styles.summaryItems}>{t.cashier.itemCount(items.length)}</Text>
       </View>
 
       <View style={styles.optionsWrap}>
-        <Text style={styles.sectionLabel}>Forma de pagamento</Text>
+        <Text style={styles.sectionLabel}>{t.paymentScreen.methodSection}</Text>
         <View style={styles.optionsGrid}>
           {PAYMENT_OPTIONS.map((opt) => (
             <TouchableOpacity
@@ -89,7 +100,7 @@ export function PaymentScreen({ navigation }: { navigation: any }) {
           onPress={() => navigation.goBack()}
           disabled={busy}
         >
-          <Text style={styles.cancelBtnText}>← Voltar</Text>
+          <Text style={styles.cancelBtnText}>{t.paymentScreen.back}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.confirmBtn, !selected && styles.confirmBtnDisabled]}
@@ -99,7 +110,7 @@ export function PaymentScreen({ navigation }: { navigation: any }) {
           {busy ? (
             <ActivityIndicator color={colors.onPrimary} />
           ) : (
-            <Text style={styles.confirmBtnText}>Confirmar ✓</Text>
+            <Text style={styles.confirmBtnText}>{t.paymentScreen.submit}</Text>
           )}
         </TouchableOpacity>
       </View>

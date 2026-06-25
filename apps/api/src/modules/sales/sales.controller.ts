@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { UserRole } from "@prisma/client";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
@@ -18,6 +18,16 @@ export class SalesController {
   @Roles(UserRole.ADMIN, UserRole.CASHIER)
   checkout(@Body() dto: CheckoutDto, @CurrentUser() user: AuthenticatedUser) {
     return this.salesService.checkout(dto, user.id);
+  }
+
+  /**
+   * Fetch a single sale with full items + cashier info.
+   * Used by the Reports screen to drill into a sale.
+   */
+  @Get(":id")
+  @Roles(UserRole.ADMIN)
+  byId(@Param("id") id: string) {
+    return this.salesService.findById(id);
   }
 
   /**

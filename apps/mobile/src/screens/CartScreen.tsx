@@ -3,24 +3,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCart } from "../context/CartContext";
 import { colors, typography } from "../theme";
+import { useT, fmtMoney } from "../i18n";
 
 export function CartScreen({ navigation }: { navigation: any }) {
   const { items, incrementItem, decrementItem, removeItem, clearCart, totalItems, totalPrice } = useCart();
+  const t = useT();
 
   function handleClear() {
-    Alert.alert("Limpar carrinho?", "Todos os itens serão removidos.", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Limpar", style: "destructive", onPress: clearCart },
+    Alert.alert(t.cart.clearConfirmTitle, t.cart.clearConfirmBody, [
+      { text: t.common.cancel, style: "cancel" },
+      { text: t.cart.clear, style: "destructive", onPress: clearCart },
     ]);
   }
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Carrinho ({totalItems})</Text>
+        <Text style={styles.headerTitle}>{t.cart.title(totalItems)}</Text>
         {items.length > 0 && (
           <TouchableOpacity onPress={handleClear}>
-            <Text style={styles.clearBtn}>Limpar</Text>
+            <Text style={styles.clearBtn}>{t.cart.clear}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -34,7 +36,7 @@ export function CartScreen({ navigation }: { navigation: any }) {
             <View style={styles.itemInfo}>
               <Text style={styles.itemName} numberOfLines={1}>{item.product.name}</Text>
               <Text style={styles.itemPrice}>
-                R$ {Number(item.product.price).toFixed(2).replace(".", ",")} cada
+                {fmtMoney(item.product.price)} {t.cart.each}
               </Text>
             </View>
             <View style={styles.qtyControls}>
@@ -53,7 +55,7 @@ export function CartScreen({ navigation }: { navigation: any }) {
               </TouchableOpacity>
             </View>
             <Text style={styles.itemSubtotal}>
-              R$ {(Number(item.product.price) * item.quantity).toFixed(2).replace(".", ",")}
+              {fmtMoney(Number(item.product.price) * item.quantity)}
             </Text>
             <TouchableOpacity onPress={() => removeItem(item.product.id)}>
               <Text style={styles.removeBtn}>✕</Text>
@@ -62,9 +64,9 @@ export function CartScreen({ navigation }: { navigation: any }) {
         )}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>Carrinho vazio</Text>
+            <Text style={styles.emptyText}>{t.cart.empty}</Text>
             <TouchableOpacity onPress={() => navigation.navigate("Cashier")}>
-              <Text style={styles.emptyLink}>← Voltar para produtos</Text>
+              <Text style={styles.emptyLink}>{t.cart.backToProducts}</Text>
             </TouchableOpacity>
           </View>
         }
@@ -73,16 +75,16 @@ export function CartScreen({ navigation }: { navigation: any }) {
       {items.length > 0 && (
         <View style={styles.footer}>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total</Text>
+            <Text style={styles.totalLabel}>{t.common.total}</Text>
             <Text style={styles.totalValue}>
-              R$ {totalPrice.toFixed(2).replace(".", ",")}
+              {fmtMoney(totalPrice)}
             </Text>
           </View>
           <TouchableOpacity
             style={styles.checkoutBtn}
             onPress={() => navigation.navigate("Payment")}
           >
-            <Text style={styles.checkoutBtnText}>Finalizar venda →</Text>
+            <Text style={styles.checkoutBtnText}>{t.cart.checkout}</Text>
           </TouchableOpacity>
         </View>
       )}
