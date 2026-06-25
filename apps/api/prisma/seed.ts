@@ -5,21 +5,29 @@ const prisma = new PrismaClient();
 
 const SALT_ROUNDS = 12;
 
-const categories = [
-  { name: "Burgers", sortOrder: 10 },
-  { name: "Drinks", sortOrder: 20 },
-  { name: "Desserts", sortOrder: 30 },
-];
-
-const products = [
-  { name: "Classic Burger", categoryName: "Burgers", price: "24.90" },
-  { name: "Cheese Burger", categoryName: "Burgers", price: "28.90" },
-  { name: "Chicken Burger", categoryName: "Burgers", price: "26.90" },
-  { name: "Water", categoryName: "Drinks", price: "5.00" },
-  { name: "Soda", categoryName: "Drinks", price: "7.50" },
-  { name: "Orange Juice", categoryName: "Drinks", price: "10.00" },
-  { name: "Chocolate Cake", categoryName: "Desserts", price: "12.00" },
-  { name: "Ice Cream", categoryName: "Desserts", price: "9.00" },
+/**
+ * Initial staff for the restaurant.
+ *
+ * Note: this seed only creates users — categories and products are NOT
+ * seeded because the owner adds the real menu himself via the API
+ * (POST /api/categories, POST /api/products) or Prisma Studio.
+ */
+const STAFF: Array<{ name: string; email: string; password: string; role: UserRole }> = [
+  // Owner — full access to every screen (including user management).
+  // Mamdouh can never be demoted to a lower role except by another SUPER_ADMIN.
+  {
+    name: "Mamdouh (Owner)",
+    email: "mamdouh@restocash.local",
+    password: "mamdouh10",
+    role: UserRole.SUPER_ADMIN,
+  },
+  // Substitute — can sell, view orders, view reports. NO dashboard, NO user mgmt.
+  {
+    name: "Yousef",
+    email: "yousef@restocash.local",
+    password: "yousefLages",
+    role: UserRole.CASHIER,
+  },
 ];
 
 async function upsertUser(input: {
@@ -46,86 +54,17 @@ async function upsertUser(input: {
 }
 
 async function main() {
-  await upsertUser({
-    name: "RestoCash Admin",
-    email: "admin@restocash.local",
-    password: "admin123",
-    role: UserRole.ADMIN,
-  });
+  console.log("Seeding initial staff…");
 
-  await upsertUser({
-    name: "RestoCash Cashier",
-    email: "cashier@restocash.local",
-    password: "cashier123",
-    role: UserRole.CASHIER,
-  });
-
-  // Demo users for the Users admin screen
-  await upsertUser({
-    name: "Sara Manager",
-    email: "sara@restocash.local",
-    password: "sara123",
-    role: UserRole.ADMIN,
-  });
-  await upsertUser({
-    name: "João Caixa",
-    email: "joao@restocash.local",
-    password: "joao123",
-    role: UserRole.CASHIER,
-  });
-  await upsertUser({
-    name: "Mariana Caixa",
-    email: "mariana@restocash.local",
-    password: "mariana123",
-    role: UserRole.CASHIER,
-  });
-
-  const categoryByName = new Map<string, { id: string }>();
-
-  for (const category of categories) {
-    const saved = await prisma.category.upsert({
-      where: { name: category.name },
-      update: {
-        sortOrder: category.sortOrder,
-        isActive: true,
-      },
-      create: {
-        name: category.name,
-        sortOrder: category.sortOrder,
-        isActive: true,
-      },
-      select: { id: true, name: true },
-    });
-    categoryByName.set(saved.name, { id: saved.id });
+  for (const user of STAFF) {
+    const saved = await upsertUser(user);
+    console.log(`  ✓ ${saved.email.padEnd(30)} → ${saved.role.padEnd(12)} (${saved.name})`);
   }
 
-  for (const product of products) {
-    const category = categoryByName.get(product.categoryName);
-    if (!category) {
-      throw new Error(`Missing category ${product.categoryName}`);
-    }
-
-    await prisma.product.upsert({
-      where: {
-        name_categoryId: {
-          name: product.name,
-          categoryId: category.id,
-        },
-      },
-      update: {
-        price: product.price,
-        isActive: true,
-      },
-      create: {
-        name: product.name,
-        categoryId: category.id,
-        price: product.price,
-        isActive: true,
-      },
-    });
-  }
-
-  console.log("Seed completed: admin/cashier users, categories, and sample products are ready.");
+  console.log("\nSeed complete. No categories or products were created — add them via:");
+  console.log("  • Web UI: http://100.100.143.125:8081  (after login as mamdouh)");
+  console.log("  • Prisma Studio: npx prisma studio");
+  console.log("  • API: POST /api/categories + POST /api/products (admin auth required)");
 }
 
 main()

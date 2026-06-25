@@ -1,4 +1,4 @@
-export type UserRole = "ADMIN" | "CASHIER";
+export type UserRole = "ADMIN" | "CASHIER" | "SUPER_ADMIN";
 export type PaymentMethod = "CASH" | "PIX" | "CARD_DEBIT" | "CARD_CREDIT";
 export type SaleStatus = "COMPLETED" | "CANCELLED";
 

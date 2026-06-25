@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, View, Text, TouchableOpacity, StyleSheet, LogBox, Modal, Pressable } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -36,13 +36,52 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 /* ── Main screen with bottom tabs ── */
 type TabKey = "dashboard" | "cashier" | "orders" | "reports" | "users";
 
+/**
+ * Permission helpers — single source of truth for what each role sees.
+ *
+ *   SUPER_ADMIN : everything (dashboard + cashier + orders + reports + users)
+ *   ADMIN       : everything except the right to edit other SUPER_ADMIN
+ *                 accounts (the server enforces this for update/delete)
+ *   CASHIER     : only the operational screens — cashier + orders + reports
+ *                 (no dashboard KPIs, no user management)
+ */
+function canSeeDashboard(role?: string): boolean {
+  return role === "ADMIN" || role === "SUPER_ADMIN";
+}
+function canSeeUsers(role?: string): boolean {
+  return role === "ADMIN" || role === "SUPER_ADMIN";
+}
+function canSeeReports(role?: string): boolean {
+  // everyone in the restaurant needs to see the daily numbers
+  return role === "ADMIN" || role === "SUPER_ADMIN" || role === "CASHIER";
+}
+
 function MainScreen({ navigation }: { navigation: any }) {
   const { user, logout } = useAuth();
-  const isAdmin = user?.role === "ADMIN";
   const t = useT();
-  const [activeTab, setActiveTab] = useState<TabKey>("cashier");
+  const role = user?.role as string | undefined;
+
+  // Pick the first tab the user is allowed to see — guards against stale
+  // state if their role changed between sessions.
+  const defaultTab: TabKey = canSeeDashboard(role)
+    ? "dashboard"
+    : canSeeReports(role)
+    ? "reports"
+    : "cashier";
+  const [activeTab, setActiveTab] = useState<TabKey>(defaultTab);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const insets = useSafeAreaInsets();
+
+  // Defensive: if a tab became unavailable, fall back to cashier.
+  useEffect(() => {
+    if (activeTab === "dashboard" && !canSeeDashboard(role)) {
+      setActiveTab("cashier");
+    } else if (activeTab === "users" && !canSeeUsers(role)) {
+      setActiveTab("cashier");
+    } else if (activeTab === "reports" && !canSeeReports(role)) {
+      setActiveTab("cashier");
+    }
+  }, [activeTab, role]);
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -62,7 +101,7 @@ function MainScreen({ navigation }: { navigation: any }) {
 
       {/* Bottom tab bar — respects safe area (gesture bar / 3-button bar) */}
       <View style={[styles.tabBar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
-        {isAdmin && (
+        {canSeeDashboard(role) && (
           <TouchableOpacity
             style={styles.tab}
             onPress={() => setActiveTab("dashboard")}
@@ -100,21 +139,7 @@ function MainScreen({ navigation }: { navigation: any }) {
           {activeTab === "orders" && <View style={styles.activeUnderline} />}
         </TouchableOpacity>
 
-        {isAdmin && (
-          <TouchableOpacity
-            style={styles.tab}
-            onPress={() => setActiveTab("users")}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.tabIcon}>👥</Text>
-            <Text style={[styles.tabLabel, activeTab !== "users" ? styles.tabLabelInactive : null]}>
-              {t.users.title}
-            </Text>
-            {activeTab === "users" && <View style={styles.activeUnderline} />}
-          </TouchableOpacity>
-        )}
-
-        {isAdmin && (
+        {canSeeReports(role) && (
           <TouchableOpacity
             style={styles.tab}
             onPress={() => setActiveTab("reports")}
@@ -125,6 +150,20 @@ function MainScreen({ navigation }: { navigation: any }) {
               {t.tabs.reports}
             </Text>
             {activeTab === "reports" && <View style={styles.activeUnderline} />}
+          </TouchableOpacity>
+        )}
+
+        {canSeeUsers(role) && (
+          <TouchableOpacity
+            style={styles.tab}
+            onPress={() => setActiveTab("users")}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.tabIcon}>👥</Text>
+            <Text style={[styles.tabLabel, activeTab !== "users" ? styles.tabLabelInactive : null]}>
+              {t.users.title}
+            </Text>
+            {activeTab === "users" && <View style={styles.activeUnderline} />}
           </TouchableOpacity>
         )}
 

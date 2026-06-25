@@ -64,7 +64,7 @@ export type Dictionary = {
     submitError: string;
     selectMethod: string;
   };
-  roles: { ADMIN: string; CASHIER: string };
+  roles: { ADMIN: string; CASHIER: string; SUPER_ADMIN: string };
   login: {
     title: string;
     subtitle: string;
@@ -168,7 +168,7 @@ export type Dictionary = {
       role: string;
     };
     placeholders: { name: string; email: string; password: string };
-    roles: { ADMIN: string; CASHIER: string };
+    roles: { ADMIN: string; CASHIER: string; SUPER_ADMIN: string };
     save: string;
     cancel: string;
     delete: string;
@@ -227,7 +227,7 @@ const ar: Dictionary = {
     submitError: "تعذّر إتمام البيع",
     selectMethod: "اختر طريقة الدفع للمتابعة",
   },
-  roles: { ADMIN: "مدير", CASHIER: "كاشير" },
+  roles: { ADMIN: "مدير", CASHIER: "كاشير", SUPER_ADMIN: "المالك" },
   login: {
     title: "ريستوكاش",
     subtitle: "نظام الكاشير",
@@ -344,7 +344,11 @@ const ar: Dictionary = {
       email: "user@restocash.local",
       password: "6 أحرف على الأقل",
     },
-    roles: { ADMIN: "مدير (وصول كامل)", CASHIER: "كاشير (بيع فقط)" },
+    roles: {
+      ADMIN: "مدير (وصول كامل)",
+      CASHIER: "كاشير (بيع فقط)",
+      SUPER_ADMIN: "المالك (صلاحيات كاملة + إدارة المديرين)",
+    },
     save: "حفظ",
     cancel: "إلغاء",
     delete: "حذف",
@@ -408,7 +412,7 @@ const ptBR: Dictionary = {
     submitError: "Erro ao finalizar venda",
     selectMethod: "Selecione a forma de pagamento",
   },
-  roles: { ADMIN: "Administrador", CASHIER: "Caixa" },
+  roles: { ADMIN: "Administrador", CASHIER: "Caixa", SUPER_ADMIN: "Proprietário" },
   login: {
     title: "RestoCash",
     subtitle: "Sistema de Caixa",
@@ -525,7 +529,11 @@ const ptBR: Dictionary = {
       email: "user@restocash.local",
       password: "Mínimo 6 caracteres",
     },
-    roles: { ADMIN: "Administrador (acesso total)", CASHIER: "Caixa (apenas vendas)" },
+    roles: {
+      ADMIN: "Administrador (acesso total)",
+      CASHIER: "Caixa (apenas vendas)",
+      SUPER_ADMIN: "Proprietário (acesso total + gerencia admins)",
+    },
     save: "Salvar",
     cancel: "Cancelar",
     delete: "Excluir",

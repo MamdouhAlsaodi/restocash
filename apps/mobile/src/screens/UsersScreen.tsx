@@ -36,7 +36,7 @@ export function UsersScreen() {
   const [editing, setEditing] = useState<UserSummary | null>(null);
   const [creating, setCreating] = useState(false);
 
-  const isAdmin = currentUser?.role === "ADMIN";
+  const isAdmin = currentUser?.role === "ADMIN" || currentUser?.role === "SUPER_ADMIN";
 
   const load = useCallback(async () => {
     if (!isAdmin) return;
@@ -111,6 +111,7 @@ export function UsersScreen() {
     );
   }
 
+  const superAdmins = users.filter((u) => u.role === "SUPER_ADMIN");
   const admins = users.filter((u) => u.role === "ADMIN");
   const cashiers = users.filter((u) => u.role === "CASHIER");
 
@@ -150,6 +151,22 @@ export function UsersScreen() {
           />
         }
       >
+        {/* Super admins */}
+        <Text style={styles.sectionTitle}>{t.roles.SUPER_ADMIN} ({superAdmins.length})</Text>
+        <View style={styles.sectionList}>
+          {superAdmins.map((u) => (
+            <UserRow
+              key={u.id}
+              user={u}
+              currentUserId={currentUser?.id}
+              onEdit={() => setEditing(u)}
+              onDelete={() => handleDelete(u)}
+              t={t}
+            />
+          ))}
+          {superAdmins.length === 0 && <Text style={styles.emptyText}>{t.users.empty}</Text>}
+        </View>
+
         {/* Admins section */}
         <Text style={styles.sectionTitle}>{t.roles.ADMIN} ({admins.length})</Text>
         <View style={styles.sectionList}>
@@ -188,6 +205,7 @@ export function UsersScreen() {
       <UserFormModal
         visible={creating || editing !== null}
         existing={editing}
+        currentUserRole={currentUser?.role}
         onClose={() => {
           setCreating(false);
           setEditing(null);
@@ -218,13 +236,24 @@ function UserRow({
   t: ReturnType<typeof useT>;
 }) {
   const isCurrent = user.id === currentUserId;
-  const isAdmin = user.role === "ADMIN";
+  const isSuperAdmin = user.role === "SUPER_ADMIN";
+  const isAdmin = user.role === "ADMIN" || isSuperAdmin;
   const salesCount = user._count?.salesCreated ?? 0;
+
+  let avatarBg = styles.avatarCashier;
+  let icon = "💼";
+  if (isSuperAdmin) {
+    avatarBg = styles.avatarSuperAdmin;
+    icon = "👑";
+  } else if (isAdmin) {
+    avatarBg = styles.avatarAdmin;
+    icon = "👑";
+  }
 
   return (
     <View style={styles.row}>
-      <View style={[styles.avatar, isAdmin ? styles.avatarAdmin : styles.avatarCashier]}>
-        <Text style={styles.avatarIcon}>{isAdmin ? "👑" : "💼"}</Text>
+      <View style={[styles.avatar, avatarBg]}>
+        <Text style={styles.avatarIcon}>{icon}</Text>
       </View>
 
       <View style={{ flex: 1 }}>
@@ -271,11 +300,13 @@ function UserRow({
 function UserFormModal({
   visible,
   existing,
+  currentUserRole,
   onClose,
   onSaved,
 }: {
   visible: boolean;
   existing: UserSummary | null;
+  currentUserRole?: string;
   onClose: () => void;
   onSaved: () => Promise<void>;
 }) {
@@ -285,7 +316,7 @@ function UserFormModal({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"ADMIN" | "CASHIER">("CASHIER");
+  const [role, setRole] = useState<"ADMIN" | "CASHIER" | "SUPER_ADMIN">("CASHIER");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -433,6 +464,30 @@ function UserFormModal({
                 </Text>
                 <Text style={styles.roleOptionHint}>{t.users.roles.ADMIN}</Text>
               </TouchableOpacity>
+
+              {currentUserRole === "SUPER_ADMIN" && (
+                <TouchableOpacity
+                  style={[
+                    styles.roleOption,
+                    role === "SUPER_ADMIN" && styles.roleOptionActive,
+                  ]}
+                  onPress={() => setRole("SUPER_ADMIN")}
+                  disabled={busy}
+                >
+                  <Text style={styles.roleOptionIcon}>👑</Text>
+                  <Text
+                    style={[
+                      styles.roleOptionLabel,
+                      role === "SUPER_ADMIN" && styles.roleOptionLabelActive,
+                    ]}
+                  >
+                    {t.roles.SUPER_ADMIN}
+                  </Text>
+                  <Text style={styles.roleOptionHint}>
+                    {t.users.roles.SUPER_ADMIN}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             {error && (
@@ -559,6 +614,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatarAdmin: { backgroundColor: "rgba(255, 193, 7, 0.18)" },
+  avatarSuperAdmin: { backgroundColor: "rgba(229, 57, 53, 0.20)" },
   avatarCashier: { backgroundColor: "rgba(74, 108, 247, 0.18)" },
   avatarIcon: { fontSize: 22 },
 

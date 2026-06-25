@@ -25,7 +25,7 @@ export class SalesController {
    * Used by the Reports screen to drill into a sale.
    */
   @Get(":id")
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.CASHIER)
   byId(@Param("id") id: string) {
     return this.salesService.findById(id);
   }

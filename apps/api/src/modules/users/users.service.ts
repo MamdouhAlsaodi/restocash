@@ -59,9 +59,79 @@ export class UsersService {
     return rest;
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async remove(id: string, actorRole?: UserRole) {
     const existing = await this.prisma.user.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException(`User ${id} not found`);
+
+    // Protect the last admin
+    if (existing.role === UserRole.ADMIN) {
+      const adminCount = await this.prisma.user.count({
+        where: { role: UserRole.ADMIN },
+      });
+      if (adminCount <= 1) {
+        throw new BadRequestException(
+          "Cannot delete the last admin user. Promote another user first.",
+        );
+      }
+    }
+
+    // Protect the last SUPER_ADMIN
+    if (existing.role === UserRole.SUPER_ADMIN) {
+      const superAdminCount = await this.prisma.user.count({
+        where: { role: UserRole.SUPER_ADMIN },
+      });
+      if (superAdminCount <= 1) {
+        throw new BadRequestException(
+          "Cannot delete the last SUPER_ADMIN. Promote another user first.",
+        );
+      }
+      // Also: only another SUPER_ADMIN can remove a SUPER_ADMIN
+      if (actorRole !== UserRole.SUPER_ADMIN) {
+        throw new BadRequestException(
+          "Only another SUPER_ADMIN can remove this account.",
+        );
+      }
+    }
+
+    await this.prisma.user.delete({ where: { id } });
+    return { ok: true };
+  }
+
+  /**
+   * Block demotion of the last SUPER_ADMIN, and prevent non-SUPER_ADMIN
+   * actors from changing the role of a SUPER_ADMIN target.
+   */
+  async update(
+    id: string,
+    dto: UpdateUserDto,
+    actor: { id: string; role: UserRole },
+  ) {
+    const existing = await this.prisma.user.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`User ${id} not found`);
+
+    // Only a SUPER_ADMIN may edit a SUPER_ADMIN account
+    if (existing.role === UserRole.SUPER_ADMIN && actor.role !== UserRole.SUPER_ADMIN) {
+      throw new BadRequestException(
+        "Only another SUPER_ADMIN can modify this account.",
+      );
+    }
+    // A SUPER_ADMIN may not demote themselves below SUPER_ADMIN unless
+    // there is at least one other SUPER_ADMIN remaining.
+    if (
+      existing.id === actor.id &&
+      existing.role === UserRole.SUPER_ADMIN &&
+      dto.role !== undefined &&
+      dto.role !== UserRole.SUPER_ADMIN
+    ) {
+      const superAdminCount = await this.prisma.user.count({
+        where: { role: UserRole.SUPER_ADMIN },
+      });
+      if (superAdminCount <= 1) {
+        throw new BadRequestException(
+          "Cannot demote the last SUPER_ADMIN. Promote another user first.",
+        );
+      }
+    }
 
     if (dto.email && dto.email !== existing.email) {
       const dup = await this.prisma.user.findUnique({
@@ -82,25 +152,5 @@ export class UsersService {
     const updated = await this.prisma.user.update({ where: { id }, data });
     const { passwordHash: _ph, ...rest } = updated;
     return rest;
-  }
-
-  async remove(id: string) {
-    const existing = await this.prisma.user.findUnique({ where: { id } });
-    if (!existing) throw new NotFoundException(`User ${id} not found`);
-
-    // Protect the last admin
-    if (existing.role === UserRole.ADMIN) {
-      const adminCount = await this.prisma.user.count({
-        where: { role: UserRole.ADMIN },
-      });
-      if (adminCount <= 1) {
-        throw new BadRequestException(
-          "Cannot delete the last admin user. Promote another user first.",
-        );
-      }
-    }
-
-    await this.prisma.user.delete({ where: { id } });
-    return { ok: true };
   }
 }
