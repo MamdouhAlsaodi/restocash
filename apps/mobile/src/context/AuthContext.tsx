@@ -19,7 +19,9 @@ const USER_STORAGE_KEY = "auth_user";
 async function storageGet(key: string): Promise<string | null> {
   try {
     if (Platform.OS === "web") {
-      return typeof localStorage !== "undefined" ? localStorage.getItem(`restocash_${key}`) : null;
+      return (typeof globalThis !== "undefined" && (globalThis as Record<string, unknown>).localStorage)
+        ? ((globalThis as Record<string, unknown>).localStorage as Storage).getItem(`restocash_${key}`)
+        : null;
     }
     const { default: FileSystem } = await import("expo-file-system");
     const fileUri = `${FileSystem.documentDirectory}restocash_${key}.txt`;
@@ -34,8 +36,9 @@ async function storageGet(key: string): Promise<string | null> {
 async function storageSet(key: string, value: string): Promise<void> {
   try {
     if (Platform.OS === "web") {
-      if (typeof localStorage !== "undefined") {
-        localStorage.setItem(`restocash_${key}`, value);
+      const ls = (globalThis as Record<string, unknown>).localStorage as Storage | undefined;
+      if (ls) {
+        ls.setItem(`restocash_${key}`, value);
       }
       return;
     }
@@ -50,8 +53,9 @@ async function storageSet(key: string, value: string): Promise<void> {
 async function storageDelete(key: string): Promise<void> {
   try {
     if (Platform.OS === "web") {
-      if (typeof localStorage !== "undefined") {
-        localStorage.removeItem(`restocash_${key}`);
+      const ls = (globalThis as Record<string, unknown>).localStorage as Storage | undefined;
+      if (ls) {
+        ls.removeItem(`restocash_${key}`);
       }
       return;
     }
